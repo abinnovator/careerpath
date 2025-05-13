@@ -23,6 +23,10 @@ export async function getLatestInterviews(
   params: GetLatestInterviewsParams
 ): Promise<Interview[] | null> {
   const { userId, limit = 20 } = params;
+  if (!userId) {
+    console.warn("⚠️ getLatestInterviews called with undefined userId");
+    return null;
+  }
 
   const interviews = await db
     .collection("interviews")

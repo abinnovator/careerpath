@@ -58,6 +58,7 @@ export async function signIn(params: SignInParams) {
     }
 
     await setSessionCookie(idToken);
+    console.log(process.env.FIREBASE_PROJECT_ID);
   } catch (e) {
     console.log(e);
 

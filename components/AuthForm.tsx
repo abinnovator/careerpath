@@ -84,7 +84,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
           email,
           idToken,
         });
-
+        console.log(process.env.FIREBASE_PROJECT_ID);
         toast.success("Sign in successfully.");
         router.push("/");
       }
