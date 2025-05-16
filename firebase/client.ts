@@ -5,13 +5,13 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAZmUoS1EuJ31GvC2HNP97nSTh0wDvB2yw",
-  authDomain: "careerpath-8d969.firebaseapp.com",
-  projectId: "careerpath-8d969",
-  storageBucket: "careerpath-8d969.firebasestorage.app",
-  messagingSenderId: "220688754234",
-  appId: "1:220688754234:web:0080f0281403481a703703",
-  measurementId: "G-99R48GVZSR",
+  apiKey: "AIzaSyBp9SwLBFNKBQjorqlMMPmM2IBUbPB4v4E",
+  authDomain: "prep-wise-42990.firebaseapp.com",
+  projectId: "prep-wise-42990",
+  storageBucket: "prep-wise-42990.firebasestorage.app",
+  messagingSenderId: "1011600642092",
+  appId: "1:1011600642092:web:abe6124db56e0bc9de0189",
+  measurementId: "G-PYFSPXJ3SQ",
 };
 
 // Initialize Firebase
