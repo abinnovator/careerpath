@@ -1,3 +1,4 @@
+"use server";
 import Link from "next/link";
 import React from "react";
 import { Button } from "./ui/button";
@@ -7,7 +8,7 @@ import { getCurrentUser } from "@/lib/actions/auth.action";
 const WelcomeCard = async ({
   type,
 }: {
-  type: "inteview" | "calendar" | "resources";
+  type: "inteview" | "calendar" | "notes";
 }) => {
   const user = await getCurrentUser();
   return (
@@ -18,7 +19,7 @@ const WelcomeCard = async ({
           {(type === "inteview" &&
             "Get Interview-Ready with AI-Powered Practice & Feedback") ||
             (type === "calendar" && "Plan your day and never be late!") ||
-            (type === "calendar" && "Get some helpful tip and tricks.")}
+            (type === "notes" && "View your notes")}
         </p>
 
         <Button asChild className="btn-primary max-sm:w-full">

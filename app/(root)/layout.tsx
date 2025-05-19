@@ -23,8 +23,8 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
           <Link href="/calendar" className="flex items-center gap-2">
             <p className="text-primary-100">Calender</p>
           </Link>
-          <Link href="/resources" className="flex items-center gap-2">
-            <p className="text-primary-100">Resources</p>
+          <Link href="/notes" className="flex items-center gap-2">
+            <p className="text-primary-100">Notes</p>
           </Link>
           <Image
             src="/Profile_Picture-removebg-preview.png"

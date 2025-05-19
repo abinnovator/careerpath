@@ -1,9 +1,21 @@
 "use server";
 import { feedbackSchema } from "@/constants";
 import { db } from "@/firebase/admin";
+import {
+  Interview,
+  GetLatestInterviewsParams,
+  CreateFeedbackParams,
+  GetFeedbackByInterviewIdParams,
+  Feedback,
+  CreateEvent,
+  getEventByDate,
+  createNote,
+} from "@/types";
 import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
-import { limit } from "firebase/firestore";
+import { title } from "process";
+import { date } from "zod";
+
 export async function getInterviewsByUserId(
   userId: string
 ): Promise<Interview[] | null> {
@@ -126,4 +138,115 @@ export async function getFeedbackByInterviewId(
   const feedbackDoc = feedback.docs[0];
 
   return { id: feedbackDoc.id, ...feedbackDoc.data() } as Feedback;
+}
+
+export async function createEvent(params: CreateEvent) {
+  const { date, title, description, tasks, userId } = params;
+  try {
+    const event = await db
+      .collection("event")
+      .add({ date, title, description, tasks, userId });
+    return {
+      success: true,
+      message: "event created",
+      data: event,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      success: false,
+      message: "An error occured",
+    };
+  }
+}
+
+export async function getEvents(userId: string) {
+  try {
+    const events = await db
+      .collection("event")
+      .where("date", "==", date)
+      .where("userId", "==", userId)
+      .get();
+
+    return {
+      success: true,
+      message: "Got Event",
+      data: events.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      success: false,
+      message: "Could not get events",
+    };
+  }
+}
+
+export async function getEventByDate(params: getEventByDate) {
+  const { date, userId } = params;
+  try {
+    const eventsSnapshot = await db
+      .collection("event")
+      .where("date", "==", date)
+      .where("userId", "==", userId)
+      .get();
+
+    return {
+      success: true,
+      message: "Got Event",
+      data: eventsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      success: false,
+      message: "Could not get events",
+    };
+  }
+}
+
+export async function createNotes({
+  title,
+  notes,
+  userId,
+}: {
+  title: string;
+  notes: string;
+  userId: string;
+}) {
+  try {
+    const note = await db.collection("note").add({ title, notes, userId });
+    return {
+      success: true,
+      message: "event created",
+      data: note,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      success: false,
+      message: "An error occured",
+    };
+  }
+}
+
+export async function getNotes({ userId }: { userId: string }) {
+  try {
+    const events = await db
+      .collection("note")
+      .where("userId", "==", userId)
+      .get();
+
+    return {
+      success: true,
+      message: "Got Notes",
+      data: events.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      success: false,
+      message: "Could not get Notes",
+    };
+  }
 }

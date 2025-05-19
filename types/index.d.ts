@@ -65,6 +65,27 @@ interface GetFeedbackByInterviewIdParams {
   interviewId: string;
   userId: string;
 }
+export interface CreateEvent {
+  userId: string;
+  date: dayjs.Dayjs; // this is the proper type from dayjs
+  title: string;
+  description?: string;
+  tasks: string[]; // array of subtasks or events for that day
+}
+interface getEventByDate {
+  date: dayjs.Dayjs;
+  userId: string;
+}
+
+interface createNote {
+  title: string;
+  text: string;
+}
+
+interface updateNote {
+  title: string;
+  text: string;
+}
 
 interface GetLatestInterviewsParams {
   userId: string;
