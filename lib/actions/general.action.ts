@@ -9,7 +9,6 @@ import {
   Feedback,
   CreateEvent,
   getEventByDate,
-  createNote,
 } from "@/types";
 import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
@@ -219,7 +218,7 @@ export async function createNotes({
     return {
       success: true,
       message: "event created",
-      data: note,
+      noteid: note.id,
     };
   } catch (e) {
     console.log(e);
@@ -247,6 +246,79 @@ export async function getNotes({ userId }: { userId: string }) {
     return {
       success: false,
       message: "Could not get Notes",
+    };
+  }
+}
+
+export async function getNoteById({
+  userId,
+  noteId,
+}: {
+  userId: string;
+  noteId: string;
+}) {
+  try {
+    const noteDoc = await db.collection("note").doc(noteId).get();
+
+    if (!noteDoc.exists) {
+      return {
+        success: false,
+        message: "Note not found",
+        data: null,
+      };
+    }
+
+    const noteData = { id: noteDoc.id, ...noteDoc.data() };
+
+    if (noteData.userId !== userId) {
+      return {
+        success: false,
+        message: "Unauthorized access to note",
+        data: null,
+      };
+    }
+
+    return {
+      success: true,
+      message: "Got Note",
+      data: noteData,
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      success: false,
+      message: "Could not get Note",
+      data: null,
+    };
+  }
+}
+
+export async function updateNotes({
+  title,
+  notes,
+  noteId,
+}: {
+  title: string;
+  notes: string;
+  userId: string;
+  noteId: string;
+}) {
+  try {
+    const note = await db.collection("note").doc(noteId).update({
+      title: title,
+      notes: notes,
+    });
+
+    return {
+      success: true,
+      message: "event created",
+      noteid: note,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      success: false,
+      message: "An error occured",
     };
   }
 }
