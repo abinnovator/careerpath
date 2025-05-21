@@ -1,13 +1,10 @@
-// components/MyEditor.tsx
 "use client";
 
 import React, { useEffect } from "react";
-// --- NEW IMPORTS FOR BACKEND (REACT-HOOK-FORM) ---
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-// Import Input, Form components if they are not already imported but used
-import { Input } from "@/components/ui/input"; // Assuming this is for the title field
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -15,8 +12,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-// ---------------------------------------------------
-
 import { HeadingButton } from "@/components/tiptap-ui/heading-button";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
@@ -24,81 +19,77 @@ import { ListButton } from "./tiptap-ui/list-button";
 import { TaskList } from "@tiptap/extension-task-list";
 import { TaskItem } from "@tiptap/extension-task-item";
 
+// Import your CSS files
 import "@/components/tiptap-node/code-block-node/code-block-node.scss";
 import "@/components/tiptap-node/list-node/list-node.scss";
-import "@/components/tiptap-node/paragraph-node/paragraph-node.scss"; // Corrected a potential typo: was paragraph-node.scss, now paragraph-block.scss. Please verify this path exists for you!
+import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
+
 import { LinkPopover } from "./tiptap-ui/link-popover";
 import Link from "@tiptap/extension-link";
 import { Button } from "./ui/button";
-// import Code from "@tiptap/extension-code"; // REMOVED: Code extension
 import { Heading } from "@tiptap/extension-heading";
-import { updateNotes } from "@/lib/actions/general.action";
+import { createQuiz, updateNotes } from "@/lib/actions/general.action";
 
-// --- NEW: Define schema for form data ---
+// If you're using Next.js for routing:
+import { useRouter } from "next/navigation"; // Changed from 'next/router' if using App Router
+
 const myEditorFormSchema = z.object({
-  title: z.string().min(1, "Title is required"), // The `text` field
-  notes: z.string().optional(), // The `notes` (HTML) content
+  title: z.string().min(1, "Title is required"),
+  notes: z.string().optional(),
 });
 
 type MyEditorFormValues = z.infer<typeof myEditorFormSchema>;
 
-// --- NEW: Define props interface for MyEditor ---
 interface MyEditorProps {
   initialNoteData: {
-    id?: string; // Optional, useful if this is an existing note
-    title: string; // Corresponds to `text` in your original code
-    notes: string; // Corresponds to `notes` in your original code
-    userId?: string; // Optional, might be used in backend logic
+    id?: string;
+    title: string;
+    notes: string;
+    userId?: string;
   };
-  onSave: (values: { title: string; notes: string }) => Promise<void>; // Function to call on save
-  onGenerateQuiz?: () => void; // Optional function for quiz generation
+  // The onSave prop was not being used, but it's good to keep if you plan to use it
+  // onSave: (values: { title: string; notes: string }) => Promise<void>;
+  onGenerateQuiz?: () => void; // This prop is now overridden by the internal function, but can be kept for external triggers
 }
-// --------------------------------------------------
 
-// FIX: Correctly destructure props here from a single object `initialNoteData`
 export default function MyEditor({
   initialNoteData,
-  onSave,
-  onGenerateQuiz,
-}: MyEditorProps) {
-  // --- NEW: Initialize react-hook-form ---
+}: // onGenerateQuiz is now handled internally if using router.push
+// You can still keep it as a prop if you need to trigger it externally without internal navigation
+MyEditorProps) {
+  // Initialize useRouter for navigation
+  const router = useRouter();
+
   const form = useForm<MyEditorFormValues>({
     resolver: zodResolver(myEditorFormSchema),
     defaultValues: {
-      title: initialNoteData.title || "", // Set initial title from props
-      notes: initialNoteData.notes || "<p></p>", // Set initial notes from props
+      title: initialNoteData.title || "",
+      notes: initialNoteData.notes || "<p></p>",
     },
     reValidateMode: "onChange",
   });
-  // ----------------------------------------
 
   const editor = useEditor({
-    immediatelyRender: false, // KEPT: As per your original code
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
-        // Recommended: Disable StarterKit's default extensions if you use custom buttons/extensions
-        heading: false, // If you're using `@tiptap/extension-heading`
-        bulletList: false, // If you're using ListButton for bulletList
-        orderedList: false, // If you're using ListButton for orderedList
-        link: false, // If you're using LinkPopover
-        code: false, // REMOVED: StarterKit's default code extension
-        // underline: false, // REMOVED: StarterKit's default underline if it was there
+        heading: true,
+        link: true,
+        code: false, // Ensure code blocks are handled as expected if you have a custom extension for them
       }),
       TaskList,
       TaskItem.configure({ nested: true }),
-      Link.configure({ openOnClick: false, autolink: true }), // Added autolink for convenience
-      // REMOVED: Code, // Code extension
-      Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }), // Configure specific heading levels
-      // REMOVED: Underline, // Underline extension
+      Link.configure({ openOnClick: false, autolink: true }),
+      Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }),
     ],
-    // FIX: Use initialNoteData.notes for content from props
     content: initialNoteData.notes || "<p></p>",
   });
 
-  console.log(initialNoteData.notes); // KEPT: console.log, now logs notes from props
+  console.log(initialNoteData.notes);
 
+  // Effect to reset form and editor content when initialNoteData changes
   useEffect(() => {
-    // Only reset form/editor if the incoming data is actually different
+    // Only reset if the values are actually different to prevent unnecessary re-renders
     if (
       form.getValues("title") !== initialNoteData.title ||
       form.getValues("notes") !== initialNoteData.notes
@@ -107,25 +98,25 @@ export default function MyEditor({
         title: initialNoteData.title,
         notes: initialNoteData.notes || "<p></p>",
       });
+      // Update editor content only if it's different from the initial data
       if (editor && initialNoteData.notes !== editor.getHTML()) {
         editor.commands.setContent(initialNoteData.notes || "<p></p>", false);
       }
     }
-  }, [initialNoteData, form, editor]); // Dependencies ensure this effect re-runs if initialNoteData changes
+  }, [initialNoteData, form, editor]); // Add form and editor to dependency array
 
-  // --- NEW: Effect to capture editor changes and update react-hook-form ---
+  // Effect to update form's 'notes' field whenever editor content changes
   useEffect(() => {
     if (editor) {
       const handleUpdate = () => {
         form.setValue("notes", editor.getHTML(), { shouldValidate: true });
       };
       editor.on("update", handleUpdate);
-      // Cleanup function to remove the event listener when the component unmounts
       return () => {
         editor.off("update", handleUpdate);
       };
     }
-  }, [editor, form]);
+  }, [editor, form]); // Add form to dependency array
 
   const onSubmit = async (values: MyEditorFormValues) => {
     await updateNotes({
@@ -135,11 +126,38 @@ export default function MyEditor({
       userId: initialNoteData.userId,
     });
   };
-  // ---------------------------------------------------
+
+  const handleGenerateQuiz = async () => {
+    try {
+      // Ensure initialNoteData.userId and initialNoteData.id are available
+      if (!initialNoteData.userId || !initialNoteData.id) {
+        console.error("User ID or Note ID is missing for quiz generation.");
+        // Optionally, show a user-friendly error message
+        return;
+      }
+
+      const data = await createQuiz({
+        userid: initialNoteData.userId,
+        id: initialNoteData.id,
+        notes: initialNoteData.notes, // Pass the actual notes content, not the entire initialNoteData object
+      });
+      console.log(data);
+
+      if (data && data.data.id) {
+        router.push(`/quiz/${data.data.id}`); // Navigate to the quiz page
+      } else {
+        console.warn("Quiz created but no quizId returned for navigation.");
+        // Optionally, handle this case, e.g., navigate to a generic quizzes page
+        // router.push('/quizzes');
+      }
+    } catch (error) {
+      console.error("Error generating quiz:", error);
+      // Handle error, perhaps display a toast message to the user
+    }
+  };
 
   return (
     <section className="overflow-hidden">
-      {/* --- NEW: Wrap entire content in react-hook-form's Form and actual form tag --- */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="pb-20">
@@ -151,9 +169,9 @@ export default function MyEditor({
                   <FormItem className="">
                     <FormControl>
                       <Input
-                        placeholder="New Notes" // Placeholder for empty title
-                        className="text-3xl font-bold bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white" // Preserved your styling and added text-white
-                        {...field} // Binds the input to the form's 'title' field
+                        placeholder="New Notes"
+                        className="text-3xl font-bold bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage className="text-red-400" />
@@ -166,8 +184,8 @@ export default function MyEditor({
                   Save
                 </Button>
                 <Button
-                  type="button" // FIX: Changed type to "button" to prevent form submission
-                  onClick={onGenerateQuiz} // NEW: Add onClick handler
+                  type="button" // Important: set type to "button" to prevent form submission
+                  onClick={handleGenerateQuiz} // Use the fixed function
                   className="cursor-pointer"
                 >
                   Generate quiz
@@ -175,7 +193,7 @@ export default function MyEditor({
               </div>
             </div>
           </div>
-          <div className="gap-2 w-screen border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 field-sizing-content min-h-16 rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] focus-visible:ring-[3px] flex flex-col">
+          <div className="gap-2 w-full border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 field-sizing-content min-h-16 rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] focus-visible:ring-[3px] flex flex-col">
             <EditorContext.Provider value={{ editor }}>
               <div
                 className="tiptap-button-group"
@@ -184,28 +202,18 @@ export default function MyEditor({
                 <HeadingButton
                   level={1}
                   editor={editor}
-                  className="p-7"
+                  className="p-7" // Check if p-7 is intentional or if it's a typo for padding
                 ></HeadingButton>
                 <HeadingButton level={2} editor={editor}></HeadingButton>
                 <HeadingButton level={3} editor={editor}></HeadingButton>
                 <HeadingButton level={4} editor={editor}></HeadingButton>
-                <ListButton
-                  type="bulletList"
-                  level={5}
-                  editor={editor}
-                ></ListButton>
-                <ListButton
-                  type="orderedList"
-                  level={6}
-                  editor={editor}
-                ></ListButton>
-                <ListButton
-                  type="taskList"
-                  level={7}
-                  editor={editor}
-                ></ListButton>
+                {/* Ensure your ListButton component correctly handles levels or remove if not needed */}
+                <ListButton type="bulletList" editor={editor}></ListButton>
+                <ListButton type="orderedList" editor={editor}></ListButton>
+                <ListButton type="taskList" editor={editor}></ListButton>
                 <LinkPopover editor={editor} />
               </div>
+              <hr></hr>
               <EditorContent editor={editor} role="presentation" />
             </EditorContext.Provider>
           </div>

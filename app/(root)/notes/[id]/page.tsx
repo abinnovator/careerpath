@@ -17,6 +17,7 @@ const page = async ({ params }: RouteParams) => {
   const user = await getCurrentUser();
 
   const noteData = await getNoteById({ noteId: id, userId: user?.id }); // Passing id as noteId
+  // console.log(noteData);
 
   return (
     // <div>

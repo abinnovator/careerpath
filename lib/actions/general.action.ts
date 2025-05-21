@@ -322,3 +322,111 @@ export async function updateNotes({
     };
   }
 }
+
+export async function getQuizById({
+  userId,
+  id,
+}: {
+  userId: string;
+  id: string;
+}) {
+  try {
+    const quizDoc = await db.collection("quizes").doc(id).get();
+
+    if (!quizDoc.exists) {
+      return {
+        success: false,
+        message: "Note not found",
+        data: null,
+      };
+    }
+
+    const quizData = { id: quizDoc.id, ...quizDoc.data() };
+
+    if (quizData.userid !== userId) {
+      return {
+        success: false,
+        message: "Unauthorized access to note",
+        data: null,
+      };
+    }
+
+    return {
+      success: true,
+      message: "Got Quiz",
+      data: quizData,
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      success: false,
+      message: "Could not get Quiz",
+      data: null,
+    };
+  }
+}
+
+// Define the shape of the data expected by the API
+interface CreateQuizParams {
+  notes: string;
+  userid: string;
+  id: string; // This is your noteId
+}
+
+// Define the shape of the API response for better type safety
+interface QuizApiResponse {
+  success: boolean;
+  data?: string[] | string; // Data could be an array of questions or a success message
+  error?: string;
+  message?: string; // Add a message for clarity if needed
+}
+
+export async function createQuiz({
+  notes,
+  userid,
+  id,
+}: CreateQuizParams): Promise<QuizApiResponse> {
+  try {
+    console.log("Generating quiz for notes:", notes);
+    console.log("Sending userId:", userid, "noteId:", id);
+
+    const response = await fetch("http://localhost:3000/api/notes/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userid: userid,
+        id: id,
+        notes: notes,
+      }),
+    });
+
+    const result: QuizApiResponse = await response.json();
+    // console.log(result.data.quiz);
+    if (response.ok && result.success) {
+      // Removed alert
+      return {
+        success: true,
+        data: result.data,
+        message: "Quiz generated successfully!",
+      };
+    } else {
+      // Removed alert
+      console.error("Quiz generation error:", result);
+      return {
+        success: false,
+        error: result.error || "Unknown error",
+        message: result.message || "Failed to generate quiz.",
+      };
+    }
+  } catch (apiError: any) {
+    // Removed alert
+    console.error("API call failed:", apiError);
+    return {
+      success: false,
+      error: apiError.message || "Network error",
+      message: "An unexpected error occurred while generating the quiz.",
+    };
+  }
+}
