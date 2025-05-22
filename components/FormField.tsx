@@ -15,6 +15,7 @@ interface FormFieldProps<T extends FieldValues> {
   label: string;
   placeholder: string;
   type?: "text" | "password" | "email" | "file";
+  formFieldType?: string;
 }
 
 const FormField = ({
@@ -23,6 +24,7 @@ const FormField = ({
   label,
   placeholder,
   type = "text",
+  formFieldType,
 }: FormFieldProps<T>) => (
   <Controller
     name={name}
@@ -31,7 +33,12 @@ const FormField = ({
       <FormItem>
         <FormLabel className="label">{label}</FormLabel>
         <FormControl>
-          <Input className="input" placeholder={placeholder} {...field} />
+          <Input
+            className="input"
+            type={formFieldType}
+            placeholder={placeholder}
+            {...field}
+          />
         </FormControl>
         <FormMessage />
       </FormItem>

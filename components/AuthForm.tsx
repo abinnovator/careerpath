@@ -17,6 +17,7 @@ import {
 } from "@firebase/auth";
 import { auth } from "@/firebase/client";
 import { signIn, signUp } from "@/lib/actions/auth.action";
+import { FormType } from "@/types";
 
 const authFormSchema = (type: FormType) => {
   return z.object({
@@ -132,7 +133,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
               name="password"
               label="Password"
               placeholder="Enter your password"
-              type="password"
+              formFieldType="password"
             />
 
             <Button className="btn" type="submit">
