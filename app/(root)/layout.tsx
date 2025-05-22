@@ -13,7 +13,9 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
     <div className="root-layout">
       <nav className="justify-between flex flex-row">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="Logo" width={38} height={32} />
+          {/* <Image src="/logo.svg" alt="Logo" width={38} height={32} /> */}
+          {/* <Image src="/logo.png" alt="Logo" width={50} height={50} /> */}
+          <Image src="/logo-2.svg" alt="Logo" width={50} height={50} />
           <h2 className="text-primary-100">CareerPath</h2>
         </Link>
         <div className="flex flex-row gap-8">
