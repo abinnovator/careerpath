@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { isAuthenticated } from "@/lib/actions/auth.action";
 import { redirect } from "next/navigation";
+import ProfileAvatar from "@/components/avatar";
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
   const isUserAuthenticated = await isAuthenticated();
@@ -18,7 +19,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
           <Image src="/logo-2.svg" alt="Logo" width={50} height={50} />
           <h2 className="text-primary-100">CareerPath</h2>
         </Link>
-        <div className="flex flex-row gap-8">
+        <div className="flex flex-row gap-8 items-center">
           <Link href="/" className="flex items-center gap-2">
             <p className="text-primary-100">Home</p>
           </Link>
@@ -28,13 +29,14 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
           <Link href="/notes" className="flex items-center gap-2">
             <p className="text-primary-100">Notes</p>
           </Link>
-          <Image
+          {/* <Image
             src="/Profile_Picture-removebg-preview.png"
             alt="profile pic"
             width={50}
             height={50}
             className="rounded-full"
-          />
+          /> */}
+          <ProfileAvatar />
         </div>
       </nav>
 

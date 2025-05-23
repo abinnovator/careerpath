@@ -170,7 +170,7 @@ MyEditorProps) {
                     <FormControl>
                       <Input
                         placeholder="New Notes"
-                        className="text-3xl font-bold bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white"
+                        className="text-3xl font-bold  border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-white"
                         {...field}
                       />
                     </FormControl>

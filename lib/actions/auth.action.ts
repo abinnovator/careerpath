@@ -1,6 +1,8 @@
 "use server";
 
 import { db, auth } from "@/firebase/admin";
+import { SignUpParams, SignInParams } from "@/types";
+import { User } from "firebase/auth";
 import { cookies } from "next/headers";
 
 const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -117,4 +119,28 @@ export async function isAuthenticated() {
   const user = await getCurrentUser();
 
   return !!user;
+}
+
+export async function updateUserDetails({
+  uid,
+  name,
+  profileImageUrl,
+}: {
+  uid: string;
+  name: string;
+  profileImageUrl: string;
+}) {
+  try {
+    const user = await db.collection("users").doc(uid).update({
+      name: name,
+      profileImage: profileImageUrl,
+    });
+    return {
+      success: true,
+      message: "User updated",
+    };
+  } catch (error) {
+    console.log(error);
+    alert("There was an error");
+  }
 }

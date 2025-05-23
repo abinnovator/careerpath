@@ -22,9 +22,11 @@ const WelcomeCard = async ({
             (type === "notes" && "View your notes")}
         </p>
 
-        <Button asChild className="btn-primary max-sm:w-full">
-          <Link href="/interview">Create an mock interview</Link>
-        </Button>
+        {type === "inteview" && ( // Removed the outer curly braces
+          <Button asChild className="btn-primary max-sm:w-full">
+            <Link href="/interview">Create an mock interview</Link>
+          </Button>
+        )}
       </div>
 
       <Image

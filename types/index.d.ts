@@ -104,6 +104,12 @@ interface SignUpParams {
   password: string;
 }
 
+interface changeDetailsParams {
+  name: string;
+  userId: string;
+  profilePic: string;
+}
+
 type FormType = "sign-in" | "sign-up";
 
 interface InterviewFormProps {
