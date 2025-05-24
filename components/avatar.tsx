@@ -92,10 +92,7 @@ const ProfileAvatar = () => {
         <DropdownMenuTrigger asChild>
           <Avatar>
             {/* Display the user's photoURL or a fallback image */}
-            <AvatarImage
-              urlEndpoint="https://ik.imagekit.io/ki5emlag8"
-              src={currentUser?.profileImage || "/image.png"}
-            />
+            <AvatarImage src={currentUser?.profileImage || "/image.png"} />
             <AvatarFallback>{avatarFallback}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>

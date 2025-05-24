@@ -390,8 +390,9 @@ export async function createQuiz({
   try {
     console.log("Generating quiz for notes:", notes);
     console.log("Sending userId:", userid, "noteId:", id);
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "localhost:3000"; // Add a local fallback for dev if needed
 
-    const response = await fetch("http://localhost:3000/api/notes/generate", {
+    const response = await fetch(`https://${baseUrl}/api/notes/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
