@@ -59,7 +59,7 @@ const NotesCard = ({
   const handleCreateNote = async () => {
     if (!userId) return;
 
-    const { success, noteId: newNoteId } = await createNotes({
+    const { success, noteid: newNoteId } = await createNotes({
       title: "New Notes",
       notes: "",
       userId: userId,
