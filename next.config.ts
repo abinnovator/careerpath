@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  compiler: {
+    // Remove all console logs
+    removeConsole: true,
+  },
 };
 
 export default nextConfig;
