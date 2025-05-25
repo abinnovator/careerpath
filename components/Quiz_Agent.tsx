@@ -25,11 +25,12 @@ interface SavedMessage {
 interface AgentProps {
   userName: string;
   userId: string;
+  userImage: string;
   questions: []; // The array of quiz questions to be asked
   // Removed interviewId as it's not directly managed by this component's function
 }
 
-const Agent = ({ userName, userId, questions }: AgentProps) => {
+const Agent = ({ userName, userId, questions, userImage }: AgentProps) => {
   const router = useRouter();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -127,7 +128,7 @@ const Agent = ({ userName, userId, questions }: AgentProps) => {
         <div className="card-border">
           <div className="card-content">
             <Image
-              src="/user-avatar.png"
+              src={userImage}
               alt="User avatar"
               width={540}
               height={540}

@@ -9,6 +9,7 @@ import { vapi } from "@/lib/vapi.sdk";
 import router from "next/router";
 import { interviewer } from "@/constants";
 import { createFeedback } from "@/lib/actions/general.action";
+import { AgentProps } from "@/types";
 
 enum CallStatus {
   INACTIVE = "INACTIVE",
@@ -28,6 +29,7 @@ const Agent = ({
   type,
   interviewId,
   questions,
+  userImage,
 }: AgentProps) => {
   const router = useRouter();
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -146,7 +148,7 @@ const Agent = ({
         <div className="card-border">
           <div className="card-content">
             <Image
-              src="/user-avatar.png"
+              src={userImage}
               alt="User avatar"
               width={540}
               height={540}

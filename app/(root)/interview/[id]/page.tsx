@@ -3,6 +3,7 @@ import DisplayTechIcons from "@/components/DisplayTechicons";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 import { getInterviewById } from "@/lib/actions/general.action";
 import { getRandomInterviewCover } from "@/lib/utils";
+import { RouteParams } from "@/types";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -40,6 +41,7 @@ const page = async ({ params }: RouteParams) => {
         interviewId={id}
         type="interview"
         questions={interview.questions}
+        userImage={user?.profileImage || "/public/image.png"}
       />
     </>
   );

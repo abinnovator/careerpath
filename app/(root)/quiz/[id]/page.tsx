@@ -13,6 +13,7 @@ const page = async ({ params }: RouteParams) => {
   console.log("Current UserId (from page.tsx):", userId);
 
   const userName = currentUser?.name || "Guest";
+  const userImage = currentUser?.profileImage || "/image.png";
 
   const quiz = await getQuizById({ userId: userId, id: id });
 
@@ -56,6 +57,7 @@ const page = async ({ params }: RouteParams) => {
         questions={parsedQuestions} // Pass the PARSED array here
         userId={userId}
         userName={userName}
+        userImage={userImage}
       />
     </div>
   );
