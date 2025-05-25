@@ -7,12 +7,18 @@
   --tt-checklist-text-active: var(--tt-gray-light-a-500);
 
   .dark & {
+    // --tt-checklist-bg-color: var(--tt-gray-dark-a-100);
+    // --tt-checklist-border-color: var(--tt-gray-dark-a-200);
+    // --tt-checklist-bg-active-color: var(--tt-gray-dark-a-900);
+    // --tt-checklist-border-active-color: var(--tt-gray-dark-a-900);
+
+    // --tt-checklist-check-icon-color: var(--black);
     --tt-checklist-bg-color: var(--tt-gray-dark-a-100);
-    --tt-checklist-bg-active-color: var(--tt-gray-dark-a-900);
-    --tt-checklist-border-color: var(--tt-gray-dark-a-200);
-    --tt-checklist-border-active-color: var(--tt-gray-dark-a-900);
-    --tt-checklist-check-icon-color: var(--black);
+    --tt-checklist-border-color: #6a96e9;
+    --tt-checklist-check-icon-color: #ffffff;
     --tt-checklist-text-active: var(--tt-gray-dark-a-500);
+    --tt-checklist-bg-active-color: #6a96e9; /* Lighter blue background when checked in dark mode */
+    --tt-checklist-border-active-color: #6a96e9; /* Lighter blue border when checked in dark mode */
   }
 }
 
@@ -119,9 +125,7 @@
           position: relative;
           cursor: pointer;
           background-color: var(--tt-checklist-bg-color);
-          transition:
-            background-color 80ms ease-out,
-            border-color 80ms ease-out;
+          transition: background-color 80ms ease-out, border-color 80ms ease-out;
 
           &::before {
             content: "";

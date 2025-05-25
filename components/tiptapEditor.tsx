@@ -78,7 +78,10 @@ MyEditorProps) {
         code: false, // Ensure code blocks are handled as expected if you have a custom extension for them
       }),
       TaskList,
-      TaskItem.configure({ nested: true }),
+      TaskItem.configure({
+        nested: true,
+        HTMLAttributes: { class: "accent-blue" },
+      }),
       Link.configure({ openOnClick: false, autolink: true }),
       Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }),
     ],
