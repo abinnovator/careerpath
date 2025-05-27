@@ -106,10 +106,18 @@ const AuthForm = ({ type }: { type: FormType }) => {
           return;
         }
 
-        await signIn({
+        const result = await signIn({
           email,
           idToken,
         });
+        if (result?.code === "Email not verified") {
+          toast(
+            "Your email has not been verified. Please verrify your email to sign in."
+          );
+        }
+        if (result?.code === "Wrong user credentials") {
+          toast("The entered creadentials are wrong.");
+        }
         console.log(process.env.FIREBASE_PROJECT_ID);
         toast.success("Sign in successfully.");
         router.push("/");
