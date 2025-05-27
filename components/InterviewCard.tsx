@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import DisplayTechIcons from "./DisplayTechicons";
 import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
+import { InterviewCardProps } from "@/types";
 
 const InterviewCard = async ({
   id,
@@ -13,10 +14,15 @@ const InterviewCard = async ({
   type,
   techstack,
   createdAt,
+  currentLoggedInUserId,
 }: InterviewCardProps) => {
+  console.log(userId, currentLoggedInUserId);
   const feedback =
-    userId && id
-      ? await getFeedbackByInterviewId({ interviewId: id, userId: userId })
+    currentLoggedInUserId && id && userId === currentLoggedInUserId // Check if the interview belongs to the current user
+      ? await getFeedbackByInterviewId({
+          interviewId: id,
+          userId: currentLoggedInUserId,
+        })
       : null;
   const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
   const formattedDate = dayjs(

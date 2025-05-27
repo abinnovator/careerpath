@@ -32,6 +32,7 @@ import { createQuiz, updateNotes } from "@/lib/actions/general.action";
 
 // If you're using Next.js for routing:
 import { useRouter } from "next/navigation"; // Changed from 'next/router' if using App Router
+import { toast } from "react-toastify";
 
 const myEditorFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -147,6 +148,7 @@ MyEditorProps) {
       console.log(data);
 
       if (data && data.data.id) {
+        toast("Created Quiz, rerouting now.", { className: "bg-[#17142f]" });
         router.push(`/quiz/${data.data.id}`); // Navigate to the quiz page
       } else {
         console.warn("Quiz created but no quizId returned for navigation.");
@@ -155,7 +157,9 @@ MyEditorProps) {
       }
     } catch (error) {
       console.error("Error generating quiz:", error);
-      // Handle error, perhaps display a toast message to the user
+      toast("There was an error creating the quiz", {
+        className: "bg-[#17142f]",
+      });
     }
   };
 

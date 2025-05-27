@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface NoteData {
   id: string;
@@ -66,9 +67,13 @@ const NotesCard = ({
     });
 
     if (success && newNoteId) {
+      toast("Created Notes Rerouting now", { className: "bg-[#17142f]" });
       router.push(`/notes/${newNoteId}`);
     } else {
       alert("Failed to create new notes.");
+      toast("There was an error creating the notes.", {
+        className: "bg-[#17142f]",
+      });
     }
   };
 

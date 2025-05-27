@@ -16,10 +16,12 @@ const Page = async () => {
     await getInterviewsByUserId(user?.id!),
     await getLatestInterviews({ userId: user?.id! }),
   ]);
+  // console.log(userInterviews);
+  // console.log(latestInterviews);
 
   const hasPastInterviews = userInterviews?.length > 0;
   const hasUpcomingInterviews = latestInterviews?.length > 0;
-
+  // console.log(user.id);
   return (
     <>
       <section className="card-cta">
@@ -49,7 +51,11 @@ const Page = async () => {
         <div className="interviews-section">
           {hasPastInterviews ? (
             userInterviews?.map((interview) => (
-              <InterviewCard {...interview} key={interview.id} />
+              <InterviewCard
+                {...interview}
+                key={interview.id}
+                currentLoggedInUserId={user.id}
+              />
             ))
           ) : (
             <p>You haven&apos;t taken any interviews yet</p>
@@ -63,7 +69,11 @@ const Page = async () => {
         <div className="interviews-section">
           {hasUpcomingInterviews ? (
             latestInterviews?.map((interview) => (
-              <InterviewCard {...interview} key={interview.id} />
+              <InterviewCard
+                {...interview}
+                key={interview.id}
+                currentLoggedInUserId={user.id}
+              />
             ))
           ) : (
             <p>There are no new interviews available</p>

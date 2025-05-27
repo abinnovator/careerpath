@@ -433,3 +433,46 @@ export async function createQuiz({
     };
   }
 }
+
+interface Event {
+  id: string;
+  date: string; // "YYYY-MM-DD"
+  title: string;
+  description?: string;
+  tasks?: Record<string, string>;
+  userId: string;
+  completed: boolean;
+}
+
+// ... other actions like getFeedbackByInterviewId, getInterviewsByUserId, getLatestInterviews, etc.
+
+export async function getEventsByDateRange(params: {
+  startDate: string; // YYYY-MM-DD
+  endDate: string; // YYYY-MM-DD
+  userId: string;
+}): Promise<{ success: boolean; data: Event[] | null }> {
+  const { startDate, endDate, userId } = params;
+
+  try {
+    const eventsRef = db.collection("events"); // Reference to your 'events' collection
+
+    // Query Firestore for events within the date range for a specific user
+    const snapshot = await eventsRef
+      .where("userId", "==", userId)
+      .where("date", ">=", startDate) // Query for dates greater than or equal to start
+      .where("date", "<=", endDate) // Query for dates less than or equal to end
+      .orderBy("date", "asc") // Optional: Order by date to get them in chronological order
+      .get();
+
+    const events: Event[] = [];
+    snapshot.forEach((doc) => {
+      // Cast the data to Event type, ensuring 'id' is included
+      events.push({ id: doc.id, ...doc.data() } as Event);
+    });
+
+    return { success: true, data: events };
+  } catch (error) {
+    console.error("Error fetching events by date range:", error);
+    return { success: false, data: null };
+  }
+}

@@ -4,6 +4,7 @@ import {
   getFeedbackByInterviewId,
   getInterviewById,
 } from "@/lib/actions/general.action";
+import { RouteParams } from "@/types";
 import dayjs from "dayjs";
 import Image from "next/image";
 import Link from "next/link";
@@ -87,7 +88,7 @@ const page = async ({ params }: RouteParams) => {
           </Link>
         </Button>
 
-        <Button className="btn-primary flex-1">
+        {/* <Button className="btn-primary flex-1">
           <Link
             href={`/interview/${id}`}
             className="flex w-full justify-center"
@@ -96,7 +97,7 @@ const page = async ({ params }: RouteParams) => {
               Retake Interview
             </p>
           </Link>
-        </Button>
+        </Button> */}
       </div>
     </section>
   );

@@ -29,6 +29,7 @@ const Calendar = () => {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [userId, setUserId] = useState<string>();
+  console.log(userId);
 
   const handleDateClick = (day: dayjs.Dayjs) => {
     const formattedDate = day.format("YYYY-MM-DD");

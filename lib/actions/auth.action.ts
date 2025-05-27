@@ -2,9 +2,9 @@
 
 import { db, auth } from "@/firebase/admin";
 import { SignUpParams, SignInParams } from "@/types";
-import { User } from "firebase/auth";
+import { User, sendPasswordResetEmail } from "firebase/auth";
 import { cookies } from "next/headers";
-
+import { toast } from "react-toastify";
 const ONE_WEEK = 60 * 60 * 24 * 7;
 
 export async function signUp(params: SignUpParams) {
@@ -56,6 +56,12 @@ export async function signIn(params: SignInParams) {
       return {
         success: false,
         message: "User does not exist. Create an account instead.",
+      };
+    }
+    if (!userRecord.emailVerified) {
+      return {
+        success: false,
+        message: "User has not been verfied. Please try after verifiying",
       };
     }
 
