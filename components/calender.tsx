@@ -10,15 +10,15 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import dayjs from "dayjs";
 import AddEvent from "./addEvent";
-import { getCurrentUser } from "@/lib/actions/auth.action";
-import { getEventByDate } from "@/lib/actions/general.action";
+import { getCurrentUser, ServerUser } from "@/lib/actions/auth.action"; // Import ServerUser type
+import { getEventsByMonthRange } from "@/lib/actions/general.action"; // Ensure this import is correct
 
 interface Event {
   id: string;
   date: string;
   title: string;
   description?: string;
-  tasks?: Record<string, string>; // Assuming tasks are now strings directly
+  tasks?: Record<string, string>;
   userId: string;
   completed: boolean;
 }
@@ -28,8 +28,9 @@ const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
-  const [userId, setUserId] = useState<string>();
-  console.log(userId);
+  const [userId, setUserId] = useState<string | null>(null); // Initialize as null
+  const [isLoadingUser, setIsLoadingUser] = useState(true); // New: Loading state for user data
+  const [isLoadingEvents, setIsLoadingEvents] = useState(false); // New: Loading state for calendar events
 
   const handleDateClick = (day: dayjs.Dayjs) => {
     const formattedDate = day.format("YYYY-MM-DD");
@@ -49,42 +50,53 @@ const Calendar = () => {
     setCurrentDate(dayjs());
   };
 
+  // Effect to fetch user ID once on component mount
   useEffect(() => {
     const fetchInitialUserId = async () => {
-      const user = await getCurrentUser();
-      const id = typeof user?.userId === "function" ? user.userId() : user?.id;
-      setUserId(id);
+      setIsLoadingUser(true); // Start loading user
+      const user: ServerUser | null = await getCurrentUser();
+      // CORRECTED: Use user?.id as specified by you
+      setUserId(user?.id || null);
+      setIsLoadingUser(false); // End loading user
     };
 
     fetchInitialUserId();
-  }, []); // Fetch user ID once on component mount
+  }, []);
 
+  // Effect to fetch month events whenever currentDate or userId changes
   useEffect(() => {
-    if (!userId) return;
+    // If userId is null (not logged in), or still loading user, stop here
+    if (isLoadingUser || userId === null) {
+      setIsLoadingEvents(false); // Ensure event loading is false if no user/user still loading
+      if (userId === null) setEvents([]); // Clear events if user is explicitly null
+      return;
+    }
 
     const fetchMonthEvents = async () => {
-      const startOfMonth = currentDate.startOf("month").format("YYYY-MM-DD");
-      const endOfMonth = currentDate.endOf("month").format("YYYY-MM-DD");
-      const allMonthDays = daysInMonth(currentDate).map((day) =>
-        day.format("YYYY-MM-DD")
-      );
-      let allEventsForMonth: Event[] = [];
+      setIsLoadingEvents(true); // Start loading events
+      const startDate = currentDate.startOf("month").format("YYYY-MM-DD");
+      const endDate = currentDate.endOf("month").format("YYYY-MM-DD");
 
-      for (const date of allMonthDays) {
-        const { success, data } = await getEventByDate({ date, userId });
-        if (success && data) {
-          allEventsForMonth = [...allEventsForMonth, ...(data as Event[])];
-        } else if (success) {
-          // No events for this day
-        } else {
-          console.error("Failed to fetch events for date:", date);
-        }
+      const { success, data } = await getEventsByMonthRange({
+        startDate,
+        endDate,
+        userId,
+      });
+
+      if (success && data) {
+        setEvents(data as Event[]);
+      } else {
+        console.error("Failed to fetch month events:", data);
+        setEvents([]); // Clear events on failure
       }
-      setEvents(allEventsForMonth);
+      setIsLoadingEvents(false); // End loading events
     };
 
-    fetchMonthEvents();
-  }, [currentDate, userId]);
+    // Only fetch events if userId is a valid string (meaning user is authenticated)
+    if (userId) {
+      fetchMonthEvents();
+    }
+  }, [currentDate, userId, isLoadingUser]);
 
   const daysInMonth = (date: dayjs.Dayjs) => {
     const year = date.year();
@@ -98,13 +110,35 @@ const Calendar = () => {
   };
 
   const getFirstDayOfMonthOffset = (date: dayjs.Dayjs) => {
-    return date.startOf("month").day(); // 0 for Sunday, 1 for Monday, etc.
+    return date.startOf("month").day();
   };
 
   const days = daysInMonth(currentDate);
   const firstDayOffset = getFirstDayOfMonthOffset(currentDate);
-  const totalDays = days.length + firstDayOffset;
-  const weeks = Math.ceil(totalDays / 7);
+
+  const allGridDays = Array(firstDayOffset).fill(null).concat(days);
+  while (allGridDays.length < 42) {
+    allGridDays.push(null);
+  }
+
+  if (isLoadingUser) {
+    return (
+      <div className="min-h-screen bg-background text-white p-8 flex justify-center items-center">
+        <p className="text-xl">Loading user data...</p>
+      </div>
+    );
+  }
+
+  if (userId === null) {
+    return (
+      <div className="min-h-screen bg-background text-white p-8 flex flex-col justify-center items-center">
+        <p className="text-xl text-center mb-4">
+          Please sign in to view your calendar.
+        </p>
+      </div>
+    );
+  }
+  console.log(events);
 
   return (
     <>
@@ -136,44 +170,58 @@ const Calendar = () => {
         </div>
 
         <div className="grid grid-cols-7 text-center font-semibold border-b border-gray-700 pb-2">
-          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
             <div key={day}>{day}</div>
           ))}
         </div>
 
         <div className="grid grid-cols-7 gap-2 mt-4 text-center text-sm">
-          {Array(firstDayOffset)
-            .fill(null)
-            .map((_, index) => (
-              <div
-                key={`empty-${index}`}
-                className="h-20 border border-transparent rounded-md p-1"
-              />
-            ))}
-          {days.map((day) => {
-            const formattedDate = day.format("YYYY-MM-DD");
-            const hasEvent = events.some(
-              (event) => event.date === formattedDate
-            );
+          {isLoadingEvents
+            ? Array(42)
+                .fill(null)
+                .map((_, index) => (
+                  <div
+                    key={`skeleton-${index}`}
+                    className="h-20 bg-[#0F234C] animate-pulse rounded-md p-1"
+                  />
+                ))
+            : allGridDays.map((day, index) => {
+                if (!day) {
+                  return (
+                    <div
+                      key={`empty-${index}`}
+                      className="h-20 border border-transparent rounded-md p-1"
+                    />
+                  );
+                }
 
-            return (
-              <div
-                key={formattedDate}
-                className={`h-20 border border-gray-700 rounded-md p-1 hover:bg-[#132454] transition cursor-pointer ${
-                  formattedDate === selectedDate ? "bg-[#132454]" : ""
-                }`}
-                onClick={() => handleDateClick(day)}
-              >
-                <div className="text-gray-300 font-medium">{day.date()}</div>
-                {hasEvent && (
-                  <div className="text-xs bg-purple-600 text-white mt-2 rounded px-1">
-                    {events.find((event) => event.date === formattedDate)
-                      ?.title || "Event"}
+                const formattedDate = day.format("YYYY-MM-DD");
+                const eventsForDay = events.filter(
+                  (event) => event.date === formattedDate
+                );
+                const hasEvent = eventsForDay.length > 0;
+
+                return (
+                  <div
+                    key={formattedDate}
+                    className={`h-20 border border-gray-700 rounded-md p-1 hover:bg-[#132454] transition cursor-pointer ${
+                      formattedDate === selectedDate ? "bg-[#132454]" : ""
+                    }`}
+                    onClick={() => handleDateClick(day)}
+                  >
+                    <div className="text-gray-300 font-medium">
+                      {day.date()}
+                    </div>
+                    {hasEvent && (
+                      <div className="text-xs bg-purple-600 text-white mt-2 rounded px-1 max-w-full truncate">
+                        {eventsForDay[0]?.title || "Event"}
+                        {eventsForDay.length > 1 &&
+                          ` (+${eventsForDay.length - 1})`}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
         </div>
       </div>
 
