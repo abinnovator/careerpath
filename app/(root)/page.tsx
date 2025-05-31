@@ -32,7 +32,7 @@ const Page = async () => {
           </p>
 
           <Button asChild className="btn-primary max-sm:w-full">
-            <Link href="/interview">Start an Interview</Link>
+            <Link href="/interview">Create an Interview</Link>
           </Button>
         </div>
 
@@ -45,7 +45,7 @@ const Page = async () => {
         />
       </section>
 
-      <section className="flex flex-col gap-6 mt-8">
+      <section className="flex flex-col gap-6 mt-8 ">
         <h2>Your Interviews</h2>
 
         <div className="interviews-section">

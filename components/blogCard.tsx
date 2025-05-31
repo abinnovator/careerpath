@@ -78,7 +78,7 @@ const NotesCard = ({
   };
 
   return (
-    <div className="w-[360px] h-[415px] card-border overflow-hidden">
+    <div className="w-[360px] h-min-[415px] card-border overflow-hidden">
       <div className=" card-blog">
         {type === "Note" && noteData ? ( // Only render if type is Note AND noteData is available
           <>

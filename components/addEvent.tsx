@@ -24,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { createEvent } from "@/lib/actions/general.action";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -73,6 +74,7 @@ const AddEvent = ({ userId, date }: { userId: string; date: string }) => {
     if (success) {
       form.reset();
       setOpen(false);
+      toast("The event has been added. You can close the sidebar now.");
     } else {
       alert("Failed to add event");
     }

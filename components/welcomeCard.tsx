@@ -12,7 +12,7 @@ const WelcomeCard = async ({
 }) => {
   const user = await getCurrentUser();
   return (
-    <section className="card-cta">
+    <section className="card-cta bg-linear-to-br from-[#1E3A8A] to-[#0F1014]">
       <div className="flex flex-col gap-6 max-w-lg">
         <h2>Welcome back, {user?.name}</h2>
         <p className="text-lg">
