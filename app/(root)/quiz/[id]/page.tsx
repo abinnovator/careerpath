@@ -50,6 +50,24 @@ const page = async ({ params }: RouteParams) => {
       </div>
     );
   }
+  let parsedAnswers: string[] = []; // Assuming answers are strings for now
+  if (quiz && quiz.data && typeof quiz.data.answers === "string") {
+    try {
+      parsedAnswers = JSON.parse(quiz.data.answers);
+      if (!Array.isArray(parsedAnswers)) {
+        console.error(
+          "JSON.parse resulted in a non-array for answers:",
+          parsedAnswers
+        );
+        parsedAnswers = [];
+      }
+    } catch (parseError) {
+      console.error("Error parsing quiz.data.answers string:", parseError);
+      parsedAnswers = [];
+    }
+  } else if (quiz && quiz.data && Array.isArray(quiz.data.answers)) {
+    parsedAnswers = quiz.data.answers;
+  }
 
   return (
     <div>
@@ -58,6 +76,7 @@ const page = async ({ params }: RouteParams) => {
         userId={userId}
         userName={userName}
         userImage={userImage}
+        answers={parsedAnswers}
       />
     </div>
   );

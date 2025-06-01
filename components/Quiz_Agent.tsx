@@ -28,9 +28,16 @@ interface AgentProps {
   userImage: string;
   questions: []; // The array of quiz questions to be asked
   // Removed interviewId as it's not directly managed by this component's function
+  answers: [];
 }
 
-const Agent = ({ userName, userId, questions, userImage }: AgentProps) => {
+const Agent = ({
+  userName,
+  userId,
+  questions,
+  userImage,
+  answers,
+}: AgentProps) => {
   const router = useRouter();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
@@ -93,6 +100,7 @@ const Agent = ({ userName, userId, questions, userImage }: AgentProps) => {
         questions: formattedQuestions,
         username: userName,
         userid: userId,
+        answers: answers,
       },
       clientMessages: [],
       serverMessages: [],
