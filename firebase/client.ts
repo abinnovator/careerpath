@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  apiKey: "AIzaSyBp9SwLBFNKBQjorqlMMPmM2IBUbPB4v4E",
   authDomain: "prep-wise-42990.firebaseapp.com",
   projectId: "prep-wise-42990",
   storageBucket: "prep-wise-42990.firebasestorage.app",
@@ -17,3 +17,4 @@ const firebaseConfig = {
 const app = !getApps.length ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
