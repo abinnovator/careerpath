@@ -51,7 +51,7 @@ This project was built as part of the VAPI Build Challenge, aiming to showcase t
 1.  **Clone the repository:**
 
     ```bash
-    git clone [your-repository-url]
+    git clone https://github.com/abinnovator/careerpath
     cd career-path
     ```
 
@@ -116,9 +116,8 @@ This project demonstrates a strong utilization of VAPI.ai's voice and AI capabil
 
 ## Author
 
-[Your Name / Your Team Name]
-[Your Email / Contact Information]
-[Link to your portfolio/website (optional)]
+Aadit Bhambri
+Portfolio - https://aadit-bhambri.vercel.app
 
 ## License
 
