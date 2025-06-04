@@ -1,3 +1,4 @@
+
 # CareerPath - AI-Powered Interview Practice & Notes
 
 ## Overview
@@ -7,7 +8,6 @@ CareerPath is a web application designed to help students and job seekers ace th
 This project was built as part of the VAPI Build Challenge, aiming to showcase the innovative use of voice AI in an educational context.
 
 ## Key Features
-
 - **AI-Powered Mock Interviews:**
   - Simulate real interview scenarios with AI-driven interviewers.
   - Voice interaction powered by VAPI.ai for a more immersive experience.
@@ -33,20 +33,8 @@ This project was built as part of the VAPI Build Challenge, aiming to showcase t
 - **User Authentication:** Secure user accounts to save interview history, notes, and preferences.
 - **Responsive Design:** Accessible and usable on various devices.
 
-## Technologies Used
+## Documentation
 
-- **Frontend:** [Specify your frontend framework/library, e.g., Next.js (React)]
-- **Backend:** [Specify your backend framework/platform, e.g., Next.js API Routes, Node.js with Express]
-- **AI & Voice Integration:** [Mention VAPI.ai prominently]
-- **State Management:** [Specify your state management library, e.g., useState, Zustand, Redux]
-- **UI Components:** [Mention UI libraries used, e.g., Shadcn UI, Material UI, Tailwind CSS]
-- **Database:** [Specify your database, e.g., Firebase Firestore]
-- **Form Handling:** [Specify form handling libraries, e.g., React Hook Form, Formik]
-- **Validation:** [Specify validation libraries, e.g., Zod]
-- **Date Handling:** [Specify date handling libraries, e.g., Dayjs]
-- **Other Libraries:** [Mention any other significant libraries used]
-
-## Setup Instructions
 
 1.  **Clone the repository:**
 
@@ -93,32 +81,33 @@ This project was built as part of the VAPI Build Challenge, aiming to showcase t
 
     Open your browser at `http://localhost:3000`.
 
-## VAPI.ai Integration Details
+## Environment Variables
+      NEXT_PUBLIC_FIREBASE_API_KEY=[YOUR_API_KEY]
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=[YOUR_AUTH_DOMAIN]
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID=[YOUR_PROJECT_ID]
+      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=[YOUR_STORAGE_BUCKET]
+      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=[YOUR_MESSAGING_SENDER_ID]
+      NEXT_PUBLIC_FIREBASE_APP_ID=[YOUR_APP_ID]
+      VAPI_API_KEY=[YOUR_VAPI_API_KEY]
 
-This project deeply integrates VAPI.ai for the following features:
+## License
+GNU General Public License v3.0
 
-- **Voice-Powered Mock Interviews:** Utilizing VAPI's voice agent capabilities for realistic, interactive interview simulations.
-- **AI for Feedback Analysis:** Employing VAPI's NLP models to analyze interview transcripts and provide insightful feedback.
-- **Voice-Assisted Note Improvement:** Leveraging VAPI's text processing and generation models, accessible via voice commands, to enhance user notes.
-- **Voice-Based Quizzing:** Utilizing VAPI's text generation and voice capabilities to create and deliver interactive quizzes based on user notes, with voice input for answers and voice feedback.
 
-## Future Enhancements
+## Badges
 
-- More sophisticated AI feedback with specific examples and tailored advice.
-- Integration with calendar services (e.g., Google Calendar).
-- Expanded quiz question types and difficulty levels.
-- Personalized learning paths based on interview performance and notes.
-- More advanced voice command options for notes and quizzing.
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 
-## VAPI Build Challenge Submission
 
-This project demonstrates a strong utilization of VAPI.ai's voice and AI capabilities to create a comprehensive and innovative tool for interview preparation. The integration of voice agents into mock interviews, note-taking, and quizzing showcases the potential of voice AI to enhance learning and accessibility.
+
 
 ## Author
 
 Aadit Bhambri
 Portfolio - https://aadit-bhambri.vercel.app
 
-## License
 
-[Your License (e.g., MIT License)]
+
+## Demo
+
+https://youtu.be/b-b22ZWNTfE
